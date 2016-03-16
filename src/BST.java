@@ -20,6 +20,7 @@ public class BST<T extends Comparable<? super T>> {
 
     Entry<T> root;
     int size;
+    boolean removeFromRight;
 
     BST() {
         root = null;
@@ -118,14 +119,35 @@ public class BST<T extends Comparable<? super T>> {
         }
     }
 
-    // remove node that has two children
+    // remove node that has two children, modified to delete an element from right and left subtrees alternatively
     void removeTwo(Entry<T> node) {
+        if (removeFromRight) {
+            removeTwoFromRight(node);
+            removeFromRight = false;
+        } else {
+            removeTwoFromLeft(node);
+            removeFromRight = true;
+        }
+    }
+
+    // remove node and replace it with the min element from right subtree
+    void removeTwoFromRight(Entry<T> node) {
         Entry<T> minRight = node.right;
         while(minRight.left != null) {
             minRight = minRight.left;
         }
         node.element = minRight.element;
         removeOne(minRight);
+    }
+
+    // remove node and replace it with the max element from left subtree
+    void removeTwoFromLeft(Entry<T> node) {
+        Entry<T> maxLeft = node.left;
+        while(maxLeft.right != null) {
+            maxLeft = maxLeft.right;
+        }
+        node.element = maxLeft.element;
+        removeOne(maxLeft);
     }
 
     public static void main(String[] args) {
